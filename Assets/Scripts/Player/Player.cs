@@ -55,7 +55,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float enemyCheckRadius = 0.1f;
     [SerializeField] private Transform enemyCheck;
 
-    [Header("VFX")]
+    [Header("Player Visual")]
+    [SerializeField] private AnimatorOverrideController[] playerAnimators;
+    [SerializeField] private int skinId;
     [SerializeField] private GameObject DeathVFX;
 
 
@@ -71,6 +73,7 @@ public class Player : MonoBehaviour
     {
         defaultGravityScale = _rb.gravityScale;
         RespawnFinished(false);
+        UpdateSkin();
     }
 
     // Update is called once per frame
@@ -96,6 +99,16 @@ public class Player : MonoBehaviour
         HandleCollison();
         HandleAnimations();
 
+    }
+
+    public void UpdateSkin()
+    {
+        SkinManager skinManager = SkinManager.Instance;
+
+        if (skinManager == null) return;
+
+        skinId = skinManager.GetSkin();
+        _anim.runtimeAnimatorController = playerAnimators[skinId];
     }
 
     private void HandleEnemyDetection()

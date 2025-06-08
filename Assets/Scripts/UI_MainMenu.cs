@@ -14,8 +14,7 @@ public class UI_MainMenu : MonoBehaviour
 
     private void Start()
     {
-        // Optionally, you can start with a fade-in effect when the main menu is loaded  
-            fadeEffect.ScreenFade(0f, 1.5f); // Fade in to transparent over 1.5 second  
+        fadeEffect.ScreenFade(0f, 1.5f); // Fade in to transparent over 1.5 second  
     }
 
     public void SwitchUI(GameObject uiToEnable)
