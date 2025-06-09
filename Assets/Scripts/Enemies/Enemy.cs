@@ -58,11 +58,16 @@ public class Enemy : MonoBehaviour
 
     private void UpdatePlayerRef()
     {
-        if(playerTransform == null)
+        if (playerTransform == null || playerTransform.Equals(null))
         {
-            playerTransform = GameManager.Instance.player.transform;
+            var player = GameManager.Instance?.player;
+            if (player != null)
+            {
+                playerTransform = player.transform;
+            }
         }
     }
+
 
     // Update is called once per frame
     protected virtual void Update()

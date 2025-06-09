@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Level Management")]
+    [SerializeField] private int currentLevelIndex;
+
     [Header("Player Management")]
     public Player player;
     [SerializeField] private GameObject playerPrefab;
@@ -45,6 +48,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
         CollectFruitInfo();
     }
 
@@ -82,10 +86,29 @@ public class GameManager : MonoBehaviour
     public void AddFruit() => ++fruitCollected;
     public bool HaveRandomLookFruit() => !fruitAreRandom;
 
-    private void LoadTheEndScene() => UnityEngine.SceneManagement.SceneManager.LoadScene("TheEnd");
+    private void LoadTheEndScene() => SceneManager.LoadScene("TheEnd");
+
+    private void LoadNextLevel()
+    {
+        int nextLevelIndex = currentLevelIndex + 1;
+
+        SceneManager.LoadScene("Level_" + nextLevelIndex);
+    }
 
     public void LevelFinished()
     {
-        UI_InGame.Instance.fadeEffect.ScreenFade(1f, 1.5f, LoadTheEndScene);
+        UI_FadeEffect uI_FadeEffect = UI_InGame.Instance.fadeEffect;
+
+
+        bool noMoreLevel = currentLevelIndex + 2 == SceneManager.sceneCountInBuildSettings;
+        if (noMoreLevel)
+        {
+            uI_FadeEffect.ScreenFade(1f, 1.5f, LoadTheEndScene);
+        }
+        else
+        {
+            uI_FadeEffect.ScreenFade(1f, 1.5f, LoadNextLevel);
+        }
+
     }
 }

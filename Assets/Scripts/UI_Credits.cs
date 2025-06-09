@@ -9,12 +9,12 @@ public class UI_Credits : MonoBehaviour
     [SerializeField] private string mainMenuSceneName = "MainMenu";
     [SerializeField] private float offScreenPositionY = 1600f;
 
-    private bool skipCredits = false;
+    private bool skipCredits;
 
     private void Awake()
     {
         fadeEffect = GetComponentInChildren<UI_FadeEffect>();
-        fadeEffect.ScreenFade(0f, 1f); // Fade in to transparent over 1.5 seconds
+        fadeEffect.ScreenFade(0f, 1.5f); // Fade in to transparent over 1.5 seconds
     }
 
     private void Update()

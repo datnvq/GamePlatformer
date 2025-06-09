@@ -9,10 +9,7 @@ public class UI_FadeEffect : MonoBehaviour
 
     public void ScreenFade(float targetAlpha, float duration, System.Action onComplete = null)
     {
-        if (fadeImage != null)
-        {
-            StartCoroutine(FadeCoroutine(targetAlpha, duration, onComplete)); // Fade to black over 1 second
-        }
+         StartCoroutine(FadeCoroutine(targetAlpha, duration, onComplete)); // Fade to black over 1 second
     }
 
     private IEnumerator FadeCoroutine(float targetAlpha, float duration, System.Action onComplete)
@@ -21,14 +18,17 @@ public class UI_FadeEffect : MonoBehaviour
         Color curentColor = fadeImage.color;
 
         float startAlpha = curentColor.a;
+
         while(time < duration)
         {
             time += Time.deltaTime;
+
             float alpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
-            curentColor.a = alpha;
-            fadeImage.color = curentColor;
+
+            fadeImage.color = new Color(curentColor.r, curentColor.g, curentColor.b, alpha);
             yield return null;
         }
+        fadeImage.color = new Color(curentColor.r, curentColor.g, curentColor.b, targetAlpha); // Ensure final alpha is set
 
         onComplete?.Invoke(); // Invoke the callback if provided
     }

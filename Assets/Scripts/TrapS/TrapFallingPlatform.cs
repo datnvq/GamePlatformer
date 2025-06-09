@@ -102,7 +102,7 @@ public class TrapFallingPlatform : MonoBehaviour
     {
         _anim.SetBool("Active", true);
         canMove = false; // Stop the platform from moving horizontally
-        _rb.bodyType = RigidbodyType2D.Kinematic; // Allow the platform to fall
+        _rb.bodyType = RigidbodyType2D.Dynamic; // Allow the platform to fall
         _rb.gravityScale = 3.5f; // Set gravity scale to allow falling
         _rb.linearDamping = 0.05f;
         foreach (var col in _collider)

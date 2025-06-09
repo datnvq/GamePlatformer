@@ -5,7 +5,7 @@ public class UI_MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject[] uiElements; // Changed type from GameManager[] to GameObject[]  
     private UI_FadeEffect fadeEffect;
-    public string sceneToLoad = "GameScene"; // Name of the scene to load  
+    public string sceneToLoad; // Name of the scene to load  
 
     private void Awake()
     {
