@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Management")]
     [SerializeField] private int currentLevelIndex;
+    private int nextLevelIndex;
 
     [Header("Player Management")]
     public Player player;
@@ -49,6 +48,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+        nextLevelIndex = currentLevelIndex + 1;
         CollectFruitInfo();
     }
 
@@ -86,22 +86,53 @@ public class GameManager : MonoBehaviour
     public void AddFruit() => ++fruitCollected;
     public bool HaveRandomLookFruit() => !fruitAreRandom;
 
-    private void LoadTheEndScene() => SceneManager.LoadScene("TheEnd");
-
-    private void LoadNextLevel()
+    private void OnEnable()
     {
-        int nextLevelIndex = currentLevelIndex + 1;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
-        SceneManager.LoadScene("Level_" + nextLevelIndex);
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentLevelIndex = scene.buildIndex;
+        nextLevelIndex = currentLevelIndex + 1;
+        CollectFruitInfo();
     }
 
     public void LevelFinished()
     {
+        SaveProgression();
+        LoadNextScene();
+
+    }
+
+    private void SaveProgression()
+    {
+        PlayerPrefs.SetInt("Level_" + nextLevelIndex + "Unlocked", 1);
+
+        if (NoMoreLevel() == false)
+            PlayerPrefs.SetInt("ContinueLevelNumber", nextLevelIndex);
+    }
+
+    private void LoadTheEndScene() => SceneManager.LoadScene("TheEnd");
+
+    private void LoadNextLevel()
+    {
+        SceneManager.LoadScene("Level_" + nextLevelIndex);
+    }
+
+
+    private void LoadNextScene()
+    {
         UI_FadeEffect uI_FadeEffect = UI_InGame.Instance.fadeEffect;
 
 
-        bool noMoreLevel = currentLevelIndex + 2 == SceneManager.sceneCountInBuildSettings;
-        if (noMoreLevel)
+        
+        if (NoMoreLevel())
         {
             uI_FadeEffect.ScreenFade(1f, 1.5f, LoadTheEndScene);
         }
@@ -109,6 +140,7 @@ public class GameManager : MonoBehaviour
         {
             uI_FadeEffect.ScreenFade(1f, 1.5f, LoadNextLevel);
         }
-
     }
+
+    private bool NoMoreLevel() => currentLevelIndex + 2 == SceneManager.sceneCountInBuildSettings;
 }
