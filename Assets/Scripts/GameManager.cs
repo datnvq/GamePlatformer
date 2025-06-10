@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    [Header("Timer Management")]
+    [SerializeField] private float timerLevel;
 
     [Header("Level Management")]
     [SerializeField] private int currentLevelIndex;
@@ -52,10 +55,17 @@ public class GameManager : MonoBehaviour
         CollectFruitInfo();
     }
 
+    private void Update()
+    {
+        timerLevel += Time.deltaTime;
+        UI_InGame.Instance.UpdateTimerText(timerLevel);
+    }
+
     private void CollectFruitInfo()
     {
         Fruit[] allFruit = FindObjectsByType<Fruit>(FindObjectsSortMode.None);
         totalFruit = allFruit.Length;
+        UI_InGame.Instance.UpdateFruitText(fruitCollected, totalFruit);
     }
 
     public bool CanBeReactive() => _canBeReactive;
@@ -83,7 +93,11 @@ public class GameManager : MonoBehaviour
         GameObject newArraw = Instantiate(ArrawPrefab, position, Quaternion.identity);
     }
 
-    public void AddFruit() => ++fruitCollected;
+    public void AddFruit()
+    {
+        fruitCollected++;
+        UI_InGame.Instance.UpdateFruitText(fruitCollected, totalFruit);
+    }
     public bool HaveRandomLookFruit() => !fruitAreRandom;
 
     private void OnEnable()
@@ -100,6 +114,12 @@ public class GameManager : MonoBehaviour
     {
         currentLevelIndex = scene.buildIndex;
         nextLevelIndex = currentLevelIndex + 1;
+
+        player = FindAnyObjectByType<Player>();
+
+        timerLevel = 0f; // Reset lại timer khi vào scene mới
+        fruitCollected = 0; // Reset lại số fruit khi vào scene mới
+
         CollectFruitInfo();
     }
 
